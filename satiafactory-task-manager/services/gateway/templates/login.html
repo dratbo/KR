@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход - Satisfactory Task Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="page-auth">
+<div class="container">
+    <h1>Вход</h1>
+    <form action="/login" method="post">
+        <label class="field"><span>Имя</span><input type="text" name="username" required></label>
+        <label class="field"><span>Пароль</span><input type="password" name="password" required></label>
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+    <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+</div>
+</body>
+</html>

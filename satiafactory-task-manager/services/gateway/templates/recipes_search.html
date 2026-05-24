@@ -1,0 +1,22 @@
+{{ if . }}
+<div class="recipe-picker">
+    {{ range . }}
+    <button type="button" class="recipe-option"
+            data-class="{{ .ClassName }}" data-name="{{ .DisplayName }}"
+            onclick="selectRecipe(this.dataset.class, this.dataset.name)">
+        {{ if .IconURL }}
+        <img src="{{ .IconURL }}" alt="" class="item-icon" loading="lazy"
+             onerror="this.classList.add('icon-missing'); this.src='/static/placeholder.svg';">
+        {{ else }}
+        <img src="/static/placeholder.svg" alt="" class="item-icon">
+        {{ end }}
+        <span class="recipe-option-text">
+            <strong>{{ .DisplayName }}</strong>
+            {{ if .ProductName }}<small>{{ .ProductName }}</small>{{ end }}
+        </span>
+    </button>
+    {{ end }}
+</div>
+{{ else }}
+<p class="hint">Ничего не найдено. Попробуйте другое название.</p>
+{{ end }}

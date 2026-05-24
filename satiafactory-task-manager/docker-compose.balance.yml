@@ -1,0 +1,143 @@
+name: satiafactory-task-manager
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15
+    environment:
+      POSTGRES_USER: dratbo
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_DB: satisfactory
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dratbo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: on-failure
+    networks:
+      - app-network
+
+  user-service:
+    build: ./services/user-service
+    container_name: user-service
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      USER_SERVICE_PORT: "8081"
+      DATABASE_URL: postgres://dratbo:P@ssw0rd@postgres:5432/satisfactory?sslmode=disable
+      JWT_SECRET: Bib233asd18-
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+
+  task-service-1:
+    build: ./services/task-service
+    container_name: task-service-1
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TASK_SERVICE_PORT: "8082"
+      DATABASE_URL: postgres://dratbo:P@ssw0rd@postgres:5432/satisfactory?sslmode=disable
+      JWT_SECRET: Bib233asd18-
+      INSTANCE_ID: tasks-1
+    networks:
+      - app-network
+
+  task-service-2:
+    build: ./services/task-service
+    container_name: task-service-2
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TASK_SERVICE_PORT: "8082"
+      DATABASE_URL: postgres://dratbo:P@ssw0rd@postgres:5432/satisfactory?sslmode=disable
+      JWT_SECRET: Bib233asd18-
+      INSTANCE_ID: tasks-2
+    networks:
+      - app-network
+
+  task-service-3:
+    build: ./services/task-service
+    container_name: task-service-3
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TASK_SERVICE_PORT: "8082"
+      DATABASE_URL: postgres://dratbo:P@ssw0rd@postgres:5432/satisfactory?sslmode=disable
+      JWT_SECRET: Bib233asd18-
+      INSTANCE_ID: tasks-3
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx-lb
+    restart: on-failure
+    depends_on:
+      - task-service-1
+      - task-service-2
+      - task-service-3
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - app-network
+
+  satisfactory-data-service:
+    build: ./services/satisfactory-data-service
+    container_name: data-service
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATA_SERVICE_PORT: "8083"
+      DATABASE_URL: postgres://dratbo:P@ssw0rd@postgres:5432/satisfactory?sslmode=disable
+      DATA_FILE_PATH: ./data/Docs.json
+    ports:
+      - "8083:8083"
+    networks:
+      - app-network
+
+  gateway:
+    build: ./services/gateway
+    container_name: gateway
+    restart: on-failure
+    depends_on:
+      user-service:
+        condition: service_started
+      nginx:
+        condition: service_started
+      satisfactory-data-service:
+        condition: service_started
+    environment:
+      GATEWAY_PORT: "8080"
+      USER_SERVICE_URL: http://user-service:8081
+      TASK_SERVICE_URL: http://nginx:8090
+      DATA_SERVICE_URL: http://satisfactory-data-service:8083
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

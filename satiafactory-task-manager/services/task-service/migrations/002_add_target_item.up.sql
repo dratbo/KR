@@ -1,0 +1,2 @@
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS target_item_class_name TEXT;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS target_amount FLOAT;

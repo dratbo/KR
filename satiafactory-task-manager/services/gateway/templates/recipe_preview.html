@@ -1,0 +1,38 @@
+{{ if .RecipeClass }}
+<div class="recipe-preview">
+    <div class="recipe-preview-head">
+        {{ if .IconURL }}
+        <img src="{{ .IconURL }}" alt="" class="item-icon item-icon-lg" loading="lazy"
+             onerror="this.src='/static/placeholder.svg'">
+        {{ end }}
+        <div>
+            <strong>{{ .Title }}</strong>
+            <p class="hint">Партий: {{ printf "%.0f" .Multiplier }}{{ if .Duration }} · {{ printf "%.1f" .Duration }} с / цикл{{ end }}</p>
+        </div>
+    </div>
+
+    {{ if .Products }}
+    <p class="preview-label">Производится</p>
+    <ul class="resource-list">
+        {{ range .Products }}
+        <li>
+            <img src="{{ .IconURL }}" alt="" class="item-icon" onerror="this.src='/static/placeholder.svg'">
+            <span>{{ formatItem .Name }} × {{ printf "%g" .Amount }}</span>
+        </li>
+        {{ end }}
+    </ul>
+    {{ end }}
+
+    {{ if .Ingredients }}
+    <p class="preview-label">Нужно для крафта</p>
+    <ul class="resource-list">
+        {{ range .Ingredients }}
+        <li>
+            <img src="{{ .IconURL }}" alt="" class="item-icon" onerror="this.src='/static/placeholder.svg'">
+            <span>{{ formatItem .Name }} × {{ printf "%g" .Amount }}</span>
+        </li>
+        {{ end }}
+    </ul>
+    {{ end }}
+</div>
+{{ end }}

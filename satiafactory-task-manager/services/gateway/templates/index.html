@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Satisfactory Task Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="page-tasks">
+<header class="topbar">
+    <div class="brand">
+        <span class="brand-icon">⚙</span>
+        <span>Satisfactory Task Manager</span>
+    </div>
+    <a class="btn btn-ghost" href="/logout">Выйти</a>
+</header>
+
+<main class="layout">
+    <section class="panel panel-form">
+        <h1>Новая задача</h1>
+        <form class="task-form" hx-post="/tasks" hx-target="#tasks-list" hx-swap="innerHTML">
+            <label class="field">
+                <span>Название</span>
+                <input type="text" name="title" id="task-title" placeholder="Например: Производство стали">
+            </label>
+
+            <label class="field">
+                <span>Описание</span>
+                <textarea name="description" rows="2" placeholder="Заметки по задаче"></textarea>
+            </label>
+
+            <label class="field">
+                <span>Рецепт из игры</span>
+                <input type="search" name="q" placeholder="Начните вводить: Iron Plate, Steel…"
+                       hx-get="/recipes/search"
+                       hx-trigger="keyup changed delay:350ms, search"
+                       hx-target="#recipe-results"
+                       hx-include="this"
+                       autocomplete="off">
+            </label>
+            <div id="recipe-results" class="recipe-results"></div>
+
+            <input type="hidden" name="target_item_class_name" id="recipe-class" value="">
+
+            <div id="recipe-preview" class="recipe-preview-wrap"></div>
+
+            <label class="field field-inline">
+                <span>Количество партий</span>
+                <input type="number" name="target_amount" id="target-amount" value="1" min="1" step="1"
+                       hx-get="/recipes/preview"
+                       hx-trigger="change"
+                       hx-target="#recipe-preview"
+                       hx-include="#recipe-class, #target-amount">
+            </label>
+
+            <button type="submit" class="btn btn-primary">Создать задачу</button>
+        </form>
+    </section>
+
+    <section class="panel panel-list">
+        <h2>Мои задачи</h2>
+        <div id="tasks-list" class="tasks-list" hx-get="/tasks" hx-trigger="load" hx-swap="innerHTML">
+            <p class="hint">Загрузка…</p>
+        </div>
+    </section>
+</main>
+
+<script>
+function selectRecipe(className, displayName) {
+    document.getElementById('recipe-class').value = className;
+    const title = document.getElementById('task-title');
+    if (!title.value.trim()) {
+        title.value = displayName;
+    }
+    document.getElementById('recipe-results').innerHTML =
+        '<p class="hint selected-recipe">Выбран: <strong>' + displayName + '</strong></p>';
+    htmx.ajax('GET', '/recipes/preview?recipe=' + encodeURIComponent(className) +
+        '&amount=' + encodeURIComponent(document.getElementById('target-amount').value || 1),
+        {target: '#recipe-preview', swap: 'innerHTML'});
+}
+</script>
+</body>
+</html>

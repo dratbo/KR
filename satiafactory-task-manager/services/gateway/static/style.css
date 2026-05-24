@@ -1,0 +1,377 @@
+:root {
+    --bg: #0f1419;
+    --bg-panel: #1a2332;
+    --bg-panel-hover: #243044;
+    --accent: #fa9549;
+    --accent-dark: #c96f2e;
+    --text: #e8eef5;
+    --text-muted: #8fa3b8;
+    --border: #2d3f54;
+    --danger: #e85d5d;
+    --success: #6bc96b;
+    --radius: 10px;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #0a0e14 0%, #15202b 40%, #1a2836 100%);
+    color: var(--text);
+}
+
+body.page-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15, 20, 25, 0.85);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent);
+}
+
+.brand-icon {
+    font-size: 1.4rem;
+}
+
+.layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.panel h1, .panel h2 {
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+    color: var(--accent);
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: var(--shadow);
+}
+
+.container h1 {
+    margin-top: 0;
+    color: var(--accent);
+    text-align: center;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.field span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.field-inline {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #0f1419;
+    color: var(--text);
+    font-size: 1rem;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(250, 149, 73, 0.25);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #1a1008;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.btn-primary:hover {
+    background: var(--accent-dark);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+    color: var(--text);
+    border-color: var(--text-muted);
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.btn-sm {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+}
+
+.hint {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 8px 0;
+}
+
+.selected-recipe {
+    color: var(--success);
+}
+
+.recipe-results {
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.recipe-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.recipe-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #0f1419;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+
+.recipe-option:hover {
+    background: var(--bg-panel-hover);
+    border-color: var(--accent);
+}
+
+.recipe-option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.recipe-option-text small {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.recipe-preview-wrap {
+    margin-bottom: 12px;
+}
+
+.recipe-preview {
+    background: #0f1419;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 14px;
+}
+
+.recipe-preview-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.preview-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin: 12px 0 6px;
+}
+
+.resource-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.resource-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.resource-list.compact li {
+    padding: 4px 0;
+}
+
+.item-icon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    background: #243044;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.item-icon-lg {
+    width: 56px;
+    height: 56px;
+}
+
+.item-icon.icon-missing {
+    opacity: 0.5;
+}
+
+.tasks-list {
+    min-height: 120px;
+}
+
+.task-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.task-card {
+    background: #0f1419;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.task-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.task-card-title {
+    flex: 1;
+}
+
+.task-card-title h3 {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+}
+
+.task-desc {
+    margin: 12px 0 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(250, 149, 73, 0.2);
+    color: var(--accent);
+    margin-right: 6px;
+}
+
+.badge-muted {
+    background: rgba(143, 163, 184, 0.15);
+    color: var(--text-muted);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 32px 16px;
+}
+
+.container p {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.container a {
+    color: var(--accent);
+}

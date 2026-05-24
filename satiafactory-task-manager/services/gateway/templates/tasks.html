@@ -1,0 +1,48 @@
+{{ if . }}
+<div class="task-cards">
+    {{ range . }}
+    <article class="task-card">
+        <div class="task-card-head">
+            {{ if .IconURL }}
+            <img src="{{ .IconURL }}" alt="" class="item-icon item-icon-lg"
+                 onerror="this.src='/static/placeholder.svg'">
+            {{ else }}
+            <img src="/static/placeholder.svg" alt="" class="item-icon item-icon-lg">
+            {{ end }}
+            <div class="task-card-title">
+                <h3>{{ .Title }}</h3>
+                {{ if .RecipeName }}
+                <span class="badge">Рецепт: {{ .RecipeName }}</span>
+                {{ end }}
+                {{ if gt .TargetAmount 0 }}<span class="badge badge-muted">× {{ printf "%g" .TargetAmount }}</span>{{ end }}
+            </div>
+            <button class="btn btn-danger btn-sm"
+                    hx-delete="/tasks/delete/{{ .ID }}"
+                    hx-target="#tasks-list"
+                    hx-swap="innerHTML"
+                    hx-confirm="Удалить задачу?">✕</button>
+        </div>
+
+        {{ if .Description }}
+        <p class="task-desc">{{ .Description }}</p>
+        {{ end }}
+
+        {{ if .Ingredients }}
+        <div class="task-ingredients">
+            <p class="preview-label">Нужно для изготовления</p>
+            <ul class="resource-list compact">
+                {{ range .Ingredients }}
+                <li>
+                    <img src="{{ .IconURL }}" alt="" class="item-icon" onerror="this.src='/static/placeholder.svg'">
+                    <span>{{ formatItem .Name }} × {{ printf "%g" .Amount }}</span>
+                </li>
+                {{ end }}
+            </ul>
+        </div>
+        {{ end }}
+    </article>
+    {{ end }}
+</div>
+{{ else }}
+<p class="hint empty-state">Задач пока нет. Выберите рецепт и создайте первую!</p>
+{{ end }}

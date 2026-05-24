@@ -1,0 +1,68 @@
+name: satiafactory-task-manager
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15
+    environment:
+      POSTGRES_USER: dratbo
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_DB: satisfactory
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dratbo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: on-failure
+
+  user-service:
+    build: ./services/user-service
+    container_name: user-service
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      USER_SERVICE_PORT: "8081"
+      DATABASE_URL: postgres://dratbo:P@ssw0rd@postgres:5432/satisfactory?sslmode=disable
+      JWT_SECRET: Bib233asd18-
+    ports:
+      - "8081:8081"
+
+  task-service:
+    build: ./services/task-service
+    container_name: task-service
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TASK_SERVICE_PORT: "8082"
+      DATABASE_URL: postgres://dratbo:P@ssw0rd@postgres:5432/satisfactory?sslmode=disable
+      JWT_SECRET: Bib233asd18-
+    ports:
+      - "8082:8082"
+
+  gateway:
+    build: ./services/gateway
+    container_name: gateway
+    restart: on-failure
+    depends_on:
+      user-service:
+        condition: service_started
+      task-service:
+        condition: service_started
+    environment:
+      GATEWAY_PORT: "8080"
+      USER_SERVICE_URL: http://user-service:8081
+      TASK_SERVICE_URL: http://task-service:8082
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
